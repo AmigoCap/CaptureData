@@ -11,6 +11,7 @@ import csv
 import numpy as np
 import matplotlib.pyplot as plt
 import os
+import math
 import urllib
 
 
@@ -47,75 +48,65 @@ with open(nom_fichier+'.csv', 'r') as csvfile:
 vitesses=np.zeros((nb_marqueurs,3,nb_iterations-1))
 accelerations=np.zeros((nb_marqueurs,3,nb_iterations-2))
 
-"""
-for i in range(nb_marqueurs):
-    for j in range(nb_iterations):
-        for k in range(3):
-            if j+1<nb_iterations:
-                vitesses[i][j][k]=position[i][j+1][k]-position[i][j][k]
-            if j+2<nb_iterations:
-                accelerations[i][j+1][k]=position[i][j+2][k]+position[i][j][k]-2*position[i][j][k]"""
-
-module_v2=np.zeros((nb_marqueurs,nb_iterations-1))
+module_a_intact=np.zeros((nb_marqueurs,nb_iterations-2))
+module_v_intact=np.zeros((nb_marqueurs,nb_iterations-1))
 module_v=np.zeros((nb_marqueurs,nb_iterations-1))
 module_a=np.zeros((nb_marqueurs,nb_iterations-2))
-module_a2=np.zeros((nb_marqueurs,nb_iterations-2))
 
-"""
-for i in range(nb_marqueurs):
-    for j in range(nb_iterations):
-        if j+1<nb_iterations:
-            module_v[i][j]=math.sqrt(pow(vitesses[i][j][0],2)+pow(vitesses[i][j][1],2)+pow(vitesses[i][j][2],2))
-        if j+2<nb_iterations:
-            module_a[i][j]=math.sqrt(pow(accelerations[i][j][0],2)+pow(accelerations[i][j][1],2)+pow(accelerations[i][j][2],2))"""
+
             
 for i in range(nb_marqueurs):
     temp=np.transpose(position[i])
     for j in range(3):    
         vitesses[i][j]=np.diff(temp[j])
-    module_v2[i]=np.sqrt(np.power(vitesses[i][0],2)+np.power(vitesses[i][1],2)+np.power(vitesses[i][2],2))
-    module_v[i]=module_v2[i]
+    module_v_intact[i]=np.sqrt(np.power(vitesses[i][0],2)+np.power(vitesses[i][1],2)+np.power(vitesses[i][2],2))
+    module_v[i]=module_v_intact[i]
     n=len(module_v[i])
     for j in range(n-5):
-        module_v[i][j+3]=(module_v2[i][j]+module_v2[i][j+1]+module_v2[i][j+2]+module_v2[i][j+3]+module_v2[i][j+4])/5
+        module_v[i][j+3]=(module_v_intact[i][j]+module_v_intact[i][j+1]+module_v_intact[i][j+2]+module_v_intact[i][j+3]+module_v_intact[i][j+4])/5
     
 for i in range(nb_marqueurs):
 
-    module_a2[i]=np.diff(module_v[i])
-    module_a2[i]=abs(module_a2[i])
-    n=len(module_a2[i])
-    module_a[i]=module_a2[i]
+    module_a_intact[i]=np.diff(module_v[i])
+    module_a_intact[i]=abs(module_a_intact[i])
+    n=len(module_a_intact[i])
+    module_a[i]=module_a_intact[i]
     for j in range(n-7):
-        module_a[i][j+4]=(module_a2[i][j]+module_a2[i][j+1]+module_a2[i][j+2]+module_a2[i][j+3]+module_a2[i][j+4]+module_a2[i][j+5]+module_a2[i][j+6])/7
+        module_a[i][j+4]=(module_a_intact[i][j]+module_a_intact[i][j+1]+module_a_intact[i][j+2]+module_a_intact[i][j+3]+module_a_intact[i][j+4]+module_a_intact[i][j+5]+module_a_intact[i][j+6])/7
 
+
+def tracer_donnees(liste, indices, titre_a, titre_o):
+    fig = plt.figure(1)
+    fig.subplots_adjust(hspace=0.4,wspace=0.2)
+    n=len(indices)
+    x_max=len(liste[0])
+    y_min,y_max = minmax(liste)
+    y=math.ceil(math.sqrt(n))
+    i=0
+    for x in indices:
+        if y*(y-1)>=n:
+            plt.subplot2grid((y-1,y),(i//y,i%y))
+        else:
+            plt.subplot2grid((y,y),(i//y,i%y))
+        plt.plot(liste[x])
+        plt.axis([0,x_max,y_min,y_max])
+        plt.title("Marqueur "+str(x))
+        i+=1
     
-plt.plot(module_a[1])
-#plt.plot(module_a2[1])
-    
 
+def minmax(l1):
+    maxi_v=0
+    mini_v=0
 
-maxi_v=0
-mini_v=0
-
-for i in range(len(module_v)):
-    t1=max(module_v[i])
-    t2=min(module_v[i])
-    if t1>maxi_v:
-        maxi_v=t1
-    if t2<mini_v:
-        mini_v=t2
-
-
-maxi_a=0
-mini_a=0
-
-for i in range(len(module_a)):
-    t1=max(module_a[i])
-    t2=min(module_a[i])
-    if t1>maxi_a:
-        maxi_a=t1
-    if t2<mini_a:
-        mini_a=t2
+    for i in range(len(module_v)):
+        t1=max(module_v[i])
+        t2=min(module_v[i])
+        if t1>maxi_v:
+            maxi_v=t1
+        if t2<mini_v:
+            mini_v=t2
+            
+    return mini_v, maxi_v
         
 def couleurRBG(y,mini,maxi):
     x = (1020/(maxi-mini))*y
