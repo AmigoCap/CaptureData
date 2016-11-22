@@ -12,10 +12,10 @@ import mpl_toolkits.mplot3d.axes3d as p3
 import matplotlib.animation as animation
 import csv
 import os
+import urllib
 
 #### Paramétres ####
 
-nom_fichier = 'BrasSimple'
 num_iteration = 5
 
 #### Variables ####
@@ -26,8 +26,11 @@ nb_marqueurs = 0
 
 #### Script ####
 
-
-os.chdir("C:/Users/Quentin/Documents/Python/PAr")
+print("Téléchargement des données")
+fullfilename = os.path.join("C:/Downloads/", "temp.csv")
+nom_fichier = "temp"
+urllib.request.urlretrieve('https://raw.githubusercontent.com/AmigoCap/CaptureData/master/Data/BrasSimple.csv', fullfilename)
+os.chdir("C:/Downloads")
 print("Lecture csv")
 
 with open(nom_fichier+'.csv', 'r') as csvfile:
@@ -86,8 +89,5 @@ print("Anim")
 # Creating the Animation object
 line_ani = animation.FuncAnimation(fig, update_lines, nb_iterations, fargs=(data, lines),
                                    interval=10, blit=True)
-                                   
-FFMpegWriter = animation.writers['ffmpeg'] 
-line_ani.save('animation_bas.mp4', fps=30, extra_args=['-vcodec', 'libx264'])
 
 plt.show()

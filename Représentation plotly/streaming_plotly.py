@@ -12,15 +12,21 @@ import numpy as np
 import plotly
 import plotly.plotly as py
 import plotly.graph_objs as go
-import plotly.tools as tls 
+import os
+import urllib
 
+
+"""
+Commentaire :
+
+Seulement deux points sont représentés
+"""
 
 plotly.tools.set_credentials_file(username='Pepin', api_key='du5oc204lv')
 
 
 #### Paramétres ####
 
-nom_fichier = 'donnees'
 num_iteration = 5
 
 #### Variables ####
@@ -30,6 +36,13 @@ nb_iterations = 0
 nb_marqueurs = 0
 
 #### Script ####
+
+print("Téléchargement des données")
+fullfilename = os.path.join("C:/Downloads/", "temp.csv")
+nom_fichier = "temp"
+urllib.request.urlretrieve('https://raw.githubusercontent.com/AmigoCap/CaptureData/master/Data/BrasSimple.csv', fullfilename)
+os.chdir("C:/Downloads")
+print("Lecture csv")
 
 with open(nom_fichier+'.csv', 'r') as csvfile:
     spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')

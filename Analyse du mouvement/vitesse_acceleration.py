@@ -8,13 +8,10 @@ Created on Tue Oct 11 14:19:39 2016
 #### Modules ####
 
 import csv
-import math
 import numpy as np
 import matplotlib.pyplot as plt
-
-#### Paramétres ####
-
-nom_fichier = 'C:/Users/Quentin/Documents/Python/PAr/BrasSimple'
+import os
+import urllib
 
 
 #### Variables ####
@@ -24,6 +21,13 @@ nb_iterations = 0
 nb_marqueurs = 0
 
 #### Fonctions ####
+
+print("Téléchargement des données")
+fullfilename = os.path.join("C:/Downloads/", "temp.csv")
+nom_fichier = "temp"
+urllib.request.urlretrieve('https://raw.githubusercontent.com/AmigoCap/CaptureData/master/Data/BrasSimple.csv', fullfilename)
+os.chdir("C:/Downloads")
+print("Lecture csv")
 
 with open(nom_fichier+'.csv', 'r') as csvfile:
     spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
