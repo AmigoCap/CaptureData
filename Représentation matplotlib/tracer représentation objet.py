@@ -26,17 +26,22 @@ num_iteration = 5
 position=[]
 nb_iterations = 0
 nb_marqueurs = 0
+min_v=0
+max_v=0
 
 #### Fonctions ####
 
 class Marqueurs:
-    def __init__(self,position):
+    def __init__(self,position,vitesse):
         
         self.position=position #N vecteurs des 3 coordoonées, tableau taille 3*N
         
         self.nb_ite=nb_iterations #N nombre d'itérations
         
         self.couleur=np.zeros((self.nb_ite,3)) #on prévoit un triplet RGB par itération
+        self.couleur[0]=couleurRBG(vitesse[0],min_v,max_v)
+        for i in range(1,self.nb_ite):
+            self.couleur[i]=couleurRBG(vitesse[i-1],min_v,max_v)
             
     def set_couleur(self,mini,maxi):
         self.couleur[0][0],self.couleur[0][1],self.couleur[0][2]=0,0,255
@@ -84,7 +89,7 @@ def couleurRBG(y,mini,maxi):
         g=1020-x
         r=255
     
-    return r,g,b
+    return r/255,g/255,b/255
     
 def update_lines(num, dataLines, lines):
     i=0
@@ -92,7 +97,7 @@ def update_lines(num, dataLines, lines):
         # NOTE: there is no .set_data() for 3 dim data...
         line.set_data(data[0:2,num-1:num])
         line.set_3d_properties(data[2,num-1:num])
-        line.set_color((1,association[i]/6,0))
+        line.set_color((marqueurs[i].get_couleur()[num][0],marqueurs[i].get_couleur()[num][1],marqueurs[i].get_couleur()[num][2]))
         i+=1
     return lines
 
@@ -137,7 +142,7 @@ module_a=np.zeros((nb_marqueurs,nb_iterations-2))
 for i in range(nb_marqueurs):
     temp=np.transpose(position[i])
     for j in range(3):    
-        vitesses[i][j]=np.diff(temp[j])
+        vitesses[i][j]=np.diff(position[i][j])
     module_v_intact[i]=np.sqrt(np.power(vitesses[i][0],2)+np.power(vitesses[i][1],2)+np.power(vitesses[i][2],2))
     module_v[i]=module_v_intact[i]
     n=len(module_v[i])
@@ -153,12 +158,13 @@ for i in range(nb_marqueurs):
     for j in range(n-7):
         module_a[i][j+4]=(module_a_intact[i][j]+module_a_intact[i][j+1]+module_a_intact[i][j+2]+module_a_intact[i][j+3]+module_a_intact[i][j+4]+module_a_intact[i][j+5]+module_a_intact[i][j+6])/7     
 
-
 print("Initialisation du tracé")
+
+min_v,max_v = minmax(module_v)
 
 marqueurs=[]
 for i in range(nb_marqueurs):
-    marqueurs.append(Marqueurs(position[i]))
+    marqueurs.append(Marqueurs(position[i],module_v[i]))
 
 indices=[0,1,5,6]
     
