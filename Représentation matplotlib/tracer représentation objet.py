@@ -166,7 +166,7 @@ marqueurs=[]
 for i in range(nb_marqueurs):
     marqueurs.append(Marqueurs(position[i],module_v[i]))
 
-indices=[0,1,5,6]
+indices=[0,1,2,3,4,5,6]
     
 fig = plt.figure()
 ax = p3.Axes3D(fig)
