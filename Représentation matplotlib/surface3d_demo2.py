@@ -8,7 +8,7 @@ from mpl_toolkits.mplot3d import Axes3D
 # http://matplotlib.org/mpl_examples/mplot3d/scatter3d_demo.py
 def randrange(n, vmin, vmax):
     return (vmax - vmin) * np.random.rand(n) + vmin
-n = 100
+n = 1
 xx = randrange(n, 23, 32)
 yy = randrange(n, 0, 100)
 zz = randrange(n, -50, -25)
@@ -23,14 +23,25 @@ ax = Axes3D(fig)
 # changed on the plot we don't have to return anything from
 # the init and animate function. (return value is explained
 # in the tutorial.
-def init():
-    x = np.linspace(0, 100, 100)
-    y = np.linspace(0, 100, 100)
-    ax.scatter(xx, yy, zz, marker='o', s=20, c="goldenrod", alpha=0.6)
+
+position=np.zeros((1,3,100))
+for i in range (1):
+    position[i][0]=1
+    position[i][1]=1
+    position[i][2]=1
+
+data = position
+lines = [ax.scatter(np.random.rand(), np.random.rand(), np.random.rand(), marker='o', s=1000, c="goldenrod", alpha=0.6) for dat in data]
 
 def animate(i):
     ax.view_init(elev=10., azim=i)
+    
+def update_lines(num,data,boules):
+    for line,data in zip(boules,data):
+        print(num)
+        #if num>5:
+         #   line.set_3d_properties(1+0.05*num,zdir='z')
+    return lines
 
 # Animate
-anim = animation.FuncAnimation(fig, animate, init_func=init,
-                               frames=360, interval=20)
+anim = animation.FuncAnimation(fig, update_lines, 100, fargs=(data,lines), interval=2000, blit=True)

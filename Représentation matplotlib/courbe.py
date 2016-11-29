@@ -53,6 +53,7 @@ with open(nom_fichier+'.csv', 'r') as csvfile:
 def update_lines(num, dataLines, lines):
     for line, data in zip(lines, dataLines):
         # NOTE: there is no .set_data() for 3 dim data...
+        print(line)
         line.set_data(data[0:2, :num])
         line.set_3d_properties(data[2, :num])
     return lines

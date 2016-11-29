@@ -14,12 +14,14 @@ import math
 
 class Boules:
     def __init__(self,position):
+        
         self.position=position #N vecteurs des 3 coordoonées, tableau taille 3*N
         self.nb_ite=len(position) #N nombre d'itérations
         self.couleur=np.zeros((self.nb_ite,3)) #on prévoit un triplet RGB par itération
         self.vitesse=np.zeros((1,self.nb_ite)) #une vitesse par itération
         for i in range (1,self.nb_ite): #vitesse initiale nulle on commence à 1
             self.vitesse[0][i]=math.sqrt(pow(position[0][i]-position[0][i-1],2)+pow(position[1][i]-position[1][i-1],2)+pow(position[2][i]-position[2,i-1],2))
+            
     def set_couleur(self,mini,maxi):
         self.couleur[0][0],self.couleur[0][1],self.couleur[0][2]=0,0,255
         for i in range(1,self.nb_ite):
