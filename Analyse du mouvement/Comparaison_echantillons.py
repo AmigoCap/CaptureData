@@ -134,5 +134,27 @@ def tracer_donnees(liste,indices):
         plt.axis([0,x_max,y_min,y_max])
         plt.title("Marqueur "+str(x))
         i+=1
-tracer_donnees(A_base,[0,1,2]),tracer_donnees(A_1,[0,1,2])
+
+def comparer(liste,liste2,indices):
+    fig = plt.figure(1)
+    fig.subplots_adjust(hspace=0.4,wspace=0.2)
+    n=len(indices)
+    x_max=len(liste[0])
+    y_min1,y_max1 = minmax(liste)
+    y_min2,y_max2 = minmax(liste2)
+    y_min,y_max=min(y_min1,y_min2),max(y_max1,y_max2)
+    y=math.ceil(math.sqrt(n))
+    i=0
+    for x in indices:
+        if y*(y-1)>=n:
+            plt.subplot2grid((y-1,y),(i//y,i%y))
+        else:
+            plt.subplot2grid((y,y),(i//y,i%y))
+        p1=plt.plot(liste[x])
+        p2=plt.plot(liste2[x])
+        plt.legend([p1, p2], ["Mouvement de base", "Mouvement capturé"])
+        plt.axis([0,x_max,y_min,y_max])
+        plt.title("Marqueur "+str(x))
+        i+=1
+comparer(A_base,A_1,[0,1,2,3,4,5])
 
