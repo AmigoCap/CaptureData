@@ -15,7 +15,8 @@ import os
 import urllib
 
 """
-rajouter nom des marqueurs et tout"""
+rajouter nom des marqueurs et tout
+mettre le sol enlever axes"""
 
 #### Paramétres ####
 
