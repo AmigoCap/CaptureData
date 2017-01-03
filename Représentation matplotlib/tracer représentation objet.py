@@ -92,15 +92,7 @@ def couleurRBG(y,mini,maxi):
     
     return r/255,g/255,b/255
     
-def update_lines(num, dataLines, lines):
-    i=0
-    for line, data in zip(lines, dataLines):
-        # NOTE: there is no .set_data() for 3 dim data...
-        line.set_data(data[0:2,num-1:num])
-        line.set_3d_properties(data[2,num-1:num])
-        line.set_color((marqueurs[i].get_couleur()[num][0],marqueurs[i].get_couleur()[num][1],marqueurs[i].get_couleur()[num][2]))
-        i+=1
-    return lines
+
 
 #### Script ####
 
@@ -171,16 +163,26 @@ indices=[0,1,2,3,4,5,6]
     
 fig = plt.figure()
 ax = p3.Axes3D(fig)
+plt.axis('off')
+association = list(range(len(indices)))   
+
+"""
+x = [-2000,2000]
+y = [-2000,2000]
+x, y = np.meshgrid(x, y)
+z = [0,0]
+
+sol=ax.plot_surface(x, y, z, color='b')
+"""
     
-association = list(range(len(indices)))    
-    
- 
 data=[position[i] for i in indices]
+
     
 print("Tracé")
 
 
-lines = [ax.plot(position[i][0, 0:1], position[i][1, 0:1], position[i][2, 0:1], marker='o',color=(marqueurs[i].get_couleur()[0][0],marqueurs[i].get_couleur()[1][0],marqueurs[i].get_couleur()[2][0]),markersize=10)[0] for i in indices]
+lines =[ax.plot(position[i][0, 0:1], position[i][1, 0:1], position[i][2, 0:1], marker='o',color=(marqueurs[i].get_couleur()[0][0],marqueurs[i].get_couleur()[1][0],marqueurs[i].get_couleur()[2][0]),markersize=10)[0] for i in indices]
+
 
 
 ax.set_xlim3d([-2000, 2000])
@@ -194,6 +196,17 @@ ax.set_zlabel('Z')
 
 ax.set_title('Motion capture')
     
+def update_lines(num, dataLines, lines):
+    i=0
+    #sol.set_3d_properties()
+    for line, data in zip(lines, dataLines):
+        # NOTE: there is no .set_data() for 3 dim data...
+        line.set_data(data[0:2,num-1:num])
+        line.set_3d_properties(data[2,num-1:num])
+        line.set_color((marqueurs[i].get_couleur()[num][0],marqueurs[i].get_couleur()[num][1],marqueurs[i].get_couleur()[num][2]))
+        i+=1
+    return lines
+
 print("Animation")
 
 
