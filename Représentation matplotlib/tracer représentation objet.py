@@ -163,7 +163,7 @@ indices=[0,1,2,3,4,5,6]
     
 fig = plt.figure()
 ax = p3.Axes3D(fig)
-plt.axis('off')
+#plt.axis('off')
 association = list(range(len(indices)))   
 
 """
