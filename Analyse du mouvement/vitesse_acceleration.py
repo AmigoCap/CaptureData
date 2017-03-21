@@ -98,9 +98,9 @@ def minmax(l1):
     maxi_v=0
     mini_v=0
 
-    for i in range(len(module_v)):
-        t1=max(module_v[i])
-        t2=min(module_v[i])
+    for i in range(len(l1)):
+        t1=max(l1[i])
+        t2=min(l1[i])
         if t1>maxi_v:
             maxi_v=t1
         if t2<mini_v:
