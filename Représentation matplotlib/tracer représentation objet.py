@@ -100,7 +100,7 @@ print("Téléchargement des données")
 
 fullfilename = os.path.join("C:/Downloads/", "temp.csv")
 nom_fichier = "temp"
-urllib.request.urlretrieve('https://raw.githubusercontent.com/AmigoCap/CaptureData/master/Data/BrasSimple.csv', fullfilename)
+urllib.request.urlretrieve('https://raw.githubusercontent.com/AmigoCap/CaptureData/master/Data/pauline2.csv', fullfilename)
 os.chdir("C:/Downloads")
 
 print("Lecture csv")
@@ -117,7 +117,10 @@ with open(nom_fichier+'.csv', 'r') as csvfile:
                 nb_marqueurs = len(row)//3
                 position=np.zeros((nb_marqueurs,3,nb_iterations))      
             for j in range(len(row)):
-                position[j//3][j%3][i-5]=float(row[j])     
+                try:
+                    position[j//3][j%3][i-5]=float(row[j])
+                except:
+                    print(row[j])
         i+=1  
         
 
@@ -159,7 +162,7 @@ marqueurs=[]
 for i in range(nb_marqueurs):
     marqueurs.append(Marqueurs(position[i],module_v[i]))
 
-indices=[0,1,2,3,4,5,6]
+indices=list(range(nb_marqueurs))
     
 fig = plt.figure()
 ax = p3.Axes3D(fig)
