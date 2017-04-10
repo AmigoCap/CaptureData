@@ -183,7 +183,7 @@ for i in range(nb_marqueurs):
     
 v_musique = v_musique / nb_marqueurs
 v_musique[nb_iterations-2]=0 #correction
-plt.plot(v_musique)
+plt.plot(v_musique*100/max(v_musique))
 
 #On analyse les différents fichiers audio pour trouver la division adhéquate
 
@@ -239,6 +239,8 @@ moyv=np.sum(v_musique)/nb_iterations
 v_musique_discret = v_musique_discret/max(v_musique_discret)*100
 
 plt.plot(v_musique_discret)
+plt.ylabel("Vitesse")
+plt.xlabel("Mesure de la mesure")
 
 piste=[0]*nb_instrument
 for i in range(nb_instrument):
