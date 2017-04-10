@@ -62,8 +62,8 @@ for i in range(nb_marqueurs):
     module_v_intact[i]=np.sqrt(np.power(vitesses[i][0],2)+np.power(vitesses[i][1],2)+np.power(vitesses[i][2],2))
     module_v[i]=module_v_intact[i]
     n=len(module_v[i])
-    for j in range(n-5):
-        module_v[i][j+3]=(module_v_intact[i][j]+module_v_intact[i][j+1]+module_v_intact[i][j+2]+module_v_intact[i][j+3]+module_v_intact[i][j+4])/5
+    for j in range(n-4):
+        module_v[i][j+2]=(module_v_intact[i][j]+module_v_intact[i][j+1]+module_v_intact[i][j+2]+module_v_intact[i][j+3]+module_v_intact[i][j+4])/5
     
 for i in range(nb_marqueurs):
 
@@ -71,13 +71,13 @@ for i in range(nb_marqueurs):
     module_a_intact[i]=abs(module_a_intact[i])
     n=len(module_a_intact[i])
     module_a[i]=module_a_intact[i]
-    for j in range(n-7):
-        module_a[i][j+4]=(module_a_intact[i][j]+module_a_intact[i][j+1]+module_a_intact[i][j+2]+module_a_intact[i][j+3]+module_a_intact[i][j+4]+module_a_intact[i][j+5]+module_a_intact[i][j+6])/7
+    for j in range(n-6):
+        module_a[i][j+3]=(module_a_intact[i][j]+module_a_intact[i][j+1]+module_a_intact[i][j+2]+module_a_intact[i][j+3]+module_a_intact[i][j+4]+module_a_intact[i][j+5]+module_a_intact[i][j+6])/7
 
 
 def tracer_donnees(liste, indices, titre_a, titre_o):
     fig = plt.figure(1)
-    fig.subplots_adjust(hspace=0.4,wspace=0.2)
+    fig.subplots_adjust(hspace=0.4,wspace=0.6)
     n=len(indices)
     x_max=len(liste[0])
     y_min,y_max = minmax(liste)
@@ -91,6 +91,8 @@ def tracer_donnees(liste, indices, titre_a, titre_o):
         plt.plot(liste[x])
         plt.axis([0,x_max,y_min,y_max])
         plt.title("Marqueur "+str(x))
+        plt.ylabel(titre_o)
+        plt.xlabel(titre_a)
         i+=1
     
 
