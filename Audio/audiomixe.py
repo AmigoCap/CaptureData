@@ -34,7 +34,7 @@ battement = (1/(bpm/60))*1000
 #### Données audio ####
 
 nb_audio = 8
-nb_instrument = 4
+nb_instrument = 3
 
 audio = [0]*nb_audio
 intensite = [0]*nb_instrument
@@ -53,25 +53,25 @@ audio[1] = AudioSegment.from_wav("bass.wav")
 audio[0] = AudioSegment.from_wav("funk.wav")
 
 
-instrument[0]=[(audio[0],0), (audio[3],3), (audio[4],4)]
-intensite[0]=[20, 20, 0]
-intro[0]=[0, 0, 1]
-solo[0]=[0, 0, 0]
+instrument[0]=[(audio[0],0), (audio[3],3)]
+intensite[0]=[20, 20]
+intro[0]=[0, 0]
+solo[0]=[0, 0]
 
-instrument[1]=[(audio[1],1), (audio[5],5)]
-intensite[1]=[30, 80]
-intro[1]=[0, 0]
-solo[1]=[0, 0]
+instrument[1]=[(audio[1],1)]
+intensite[1]=[30]
+intro[1]=[0]
+solo[1]=[0]
 
 instrument[2]=[(audio[2],2)]
 intensite[2]=[35]
 intro[2]=[0]
 solo[2]=[0]
-
+"""
 instrument[3]=[(audio[6],6), (audio[7],7)]
 intensite[3]=[60, 60]
 intro[3]=[0, 0]
-solo[3]=[1, 1]
+solo[3]=[1, 1]"""
 
 zindex = [0, 20, 20, 50]
 
@@ -84,7 +84,7 @@ for i in range(nb_instrument):
 print("Téléchargement des données")
 fullfilename = os.path.join("C:/Downloads/", "temp.csv")
 nom_fichier = "temp"
-urllib.request.urlretrieve('https://raw.githubusercontent.com/AmigoCap/CaptureData/master/Data/final.csv', fullfilename)
+urllib.request.urlretrieve('https://raw.githubusercontent.com/AmigoCap/CaptureData/master/Data/pauline1.csv', fullfilename)
 os.chdir("C:/Downloads")
 print("Lecture csv")
 
@@ -98,10 +98,17 @@ with open(nom_fichier+'.csv', 'r') as csvfile:
             row = row[2:]
             if i == 5:
                 nb_marqueurs = len(row)//3
-                position=np.zeros((nb_marqueurs,nb_iterations,3))      
+                position=np.zeros((nb_marqueurs,3,nb_iterations))      
             for j in range(len(row)):
-                position[j//3][i-5][j%3]=float(row[j])     
-        i+=1        
+                try:
+                    position[j//3][j%3][i-5]=float(row[j])
+                except:
+                    print(row[j])
+        i+=1  
+        
+
+
+print("Calcul des vitesses et accélerations")   
 
 vitesses=np.zeros((nb_marqueurs,3,nb_iterations-1))
 accelerations=np.zeros((nb_marqueurs,3,nb_iterations-2))
@@ -110,13 +117,11 @@ module_a_intact=np.zeros((nb_marqueurs,nb_iterations-2))
 module_v_intact=np.zeros((nb_marqueurs,nb_iterations-1))
 module_v=np.zeros((nb_marqueurs,nb_iterations-1))
 module_a=np.zeros((nb_marqueurs,nb_iterations-2))
-
-
-            
+         
 for i in range(nb_marqueurs):
     temp=np.transpose(position[i])
     for j in range(3):    
-        vitesses[i][j]=np.diff(temp[j])
+        vitesses[i][j]=np.diff(position[i][j])
     module_v_intact[i]=np.sqrt(np.power(vitesses[i][0],2)+np.power(vitesses[i][1],2)+np.power(vitesses[i][2],2))
     module_v[i]=module_v_intact[i]
     n=len(module_v[i])
@@ -130,8 +135,9 @@ for i in range(nb_marqueurs):
     n=len(module_a_intact[i])
     module_a[i]=module_a_intact[i]
     for j in range(n-7):
-        module_a[i][j+4]=(module_a_intact[i][j]+module_a_intact[i][j+1]+module_a_intact[i][j+2]+module_a_intact[i][j+3]+module_a_intact[i][j+4]+module_a_intact[i][j+5]+module_a_intact[i][j+6])/7
+        module_a[i][j+4]=(module_a_intact[i][j]+module_a_intact[i][j+1]+module_a_intact[i][j+2]+module_a_intact[i][j+3]+module_a_intact[i][j+4]+module_a_intact[i][j+5]+module_a_intact[i][j+6])/7     
 
+print("Initialisation du tracé")
 
 def tracer_donnees(liste, indices, titre_a, titre_o):
     fig = plt.figure(1)
@@ -183,7 +189,8 @@ for i in range(nb_marqueurs):
     
 v_musique = v_musique / nb_marqueurs
 v_musique[nb_iterations-2]=0 #correction
-plt.plot(v_musique*100/max(v_musique))
+
+plt.plot(v_musique)
 
 #On analyse les différents fichiers audio pour trouver la division adhéquate
 
@@ -210,7 +217,7 @@ print("Cela correspond à :")
 print("Nombre battement : " + str(b))
 print("Nombre de mesures : " +str(m))
 div=b/divbatt
-print("Divisé en " + str(div) + " parties avec " + str(min(mesure)) + "mesures par parties")
+print("Divisé en " + str(div) + " parties avec " + str(min(mesure)) + " mesures par parties")
 fd = math.ceil(nb_iterations/(b/divbatt))
 print("Frame par division : "+ str(fd))
 print(" ")
@@ -239,8 +246,6 @@ moyv=np.sum(v_musique)/nb_iterations
 v_musique_discret = v_musique_discret/max(v_musique_discret)*100
 
 plt.plot(v_musique_discret)
-plt.ylabel("Vitesse")
-plt.xlabel("Mesure de la mesure")
 
 piste=[0]*nb_instrument
 for i in range(nb_instrument):
